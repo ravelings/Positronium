@@ -26,9 +26,6 @@
     <ClInclude Include="particle.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="equations.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="constants.h">
       <Filter>Source Files</Filter>
     </ClInclude>

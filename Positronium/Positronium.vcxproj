@@ -130,7 +130,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="constants.h" />
-    <ClInclude Include="equations.h" />
     <ClInclude Include="particle.h" />
     <ClInclude Include="particle2.h" />
     <ClInclude Include="system.h" />

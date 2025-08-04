@@ -11,20 +11,22 @@ void simulation(System& system)
 
 	int i{ 0 };
 	
-	//while (std::abs(system.getApart()) < threshold)
-	while (i < 188)
+	while (!system.detectCollision())
 	{
 		std::cout << "Step " << i << "\n\n";
 		// accelerate particle
-		system.acceleration();	// accelerate
+		system.acceleration();	// accelerate 
 		system.velocity();		// update velocity
 		system.updateLocation();// update location
+		system.calculateVector(); // obtains new direction (unit) vector
 		system.updateTime();	// update time
 
-		std::cout << "Distance Apart: " << system.getChange() * 1e9 << "Nm \n";
+		std::cout << "Distance Apart: " << system.getApart() * 1e9 << "Nm \n";
 
 		i++;
 	}
+
+	std::cout << "Collision detected\n";
 
 	std::cout << "Lifetime: " << system.getTime() * 1e9 << " Ns \n";
 
