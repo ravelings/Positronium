@@ -10,29 +10,24 @@ void simulation(System& system)
 	constexpr double threshold{ constants::e_radius * 2 };
 
 	int i{ 0 };
-	
+
 	while (!system.detectCollision())
 	{
 		std::cout << "Step " << i << "\n\n";
 		// accelerate particle
-		system.acceleration();	// accelerate 
-		system.velocity();		// update velocity
-		system.updateLocation();// update location
-		system.calculateVector(); // obtains new direction (unit) vector
-		system.updateTime();	// update time
+		system.initiateTimestep();
 
 		std::cout << "Distance Apart: " << system.getApart() * 1e9 << "Nm \n";
 
+		if (system.getisOrbit())
+		{
+			break;
+		}
 		i++;
 	}
 
-	std::cout << "Collision detected\n";
-
 	std::cout << "Lifetime: " << system.getTime() * 1e9 << " Ns \n";
-
 }
-
-
 
 int main()
 {

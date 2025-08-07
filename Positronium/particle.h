@@ -17,10 +17,17 @@ private:
 	double m_y{};
 	double m_acc_x{};
 	double m_acc_y{};
+	double m_vel_mag{};
 	double m_velocity_x{};
 	double m_velocity_y{};
+	double m_delta_v{};
 
 	double m_potential{};
+
+	double m_cross{}; // particle cross-section
+	double m_capture_rad{}; // recombination capture radius
+	double m_rate{}; // rate of photon emission
+
 
 public:
 	Particle() = default;
@@ -33,6 +40,7 @@ public:
 		m_velocity_y = 0;
 
 		m_angle = atan(start_y / start_x);
+
 	};
 	//acessors
 	
@@ -111,6 +119,11 @@ public:
 		m_velocity_y = velocity;
 	}
 
+	double getVelMag()
+	{
+		return m_vel_mag;
+	}
+
 
 
 	double getAngle()
@@ -145,7 +158,69 @@ public:
 
 		return coulombs * (m_charge * part2.getCharge())/distSquared(part2);
 	}
+
+	void crossSection()	// calculates particle's cross section relative to current velocity
+	{
+		using namespace constants;
+
+		double vel_mag{ std::hypot(m_velocity_x, m_velocity_x) };	// calculate magnitude of velocity at current timestep
+		double photon_freq{ 1 + (vel_mag * vel_mag) / (2.0 * light * light) }; // calculates photon frequency
+
+		double denominator{ vel_mag * photon_freq * photon_freq };	// v^2 * w^2
+		double numerator{ fine_struct * fine_struct * fine_struct * bohr_rad * bohr_rad }; // a^3 * a0^2
+
+		double cross_section{ numerator / denominator };	// cross section equation
+
+		m_cross = cross_section;	// set particle's current cross section
+	}
+
+	double captureRadius()	// calculates recombination area
+	{
+		using namespace constants;
+
+		crossSection(); // calculates cross section at current timestep
+
+		m_capture_rad = { std::sqrt(m_cross / pi) };
+
+		//std::cout << "Capture radius is " << m_capture_rad * 1e9 << " nm\n";
+
+		return m_capture_rad;
+	}
 	
+	void rateEmission()
+	{
+		// since number density = 1, hence flux = velocity
+		double vel_mag{ std::hypot(m_velocity_y, m_velocity_x) };
+		double rate{ vel_mag * m_cross }; // rate of photon emission
+
+		m_rate = rate;
+	}
+
+	double emitProbability(double timestep)
+	{
+		rateEmission(); // calculates emission rate
+
+		double probability{ 1 - std::exp(-m_rate * timestep) }; // poisson distribution
+		std::cout << std::scientific
+			<< "Probability of capture: "
+			<< probability
+			<< std::defaultfloat << '\n';
+		return probability;
+	}
+
+	auto vel_mag()
+	{
+		double mag = std::hypot(m_velocity_x, m_velocity_y);
+		m_vel_mag = mag;
+		return *this;
+	}
+
+	double changeInVel(double final)
+	{
+		m_delta_v = final - m_vel_mag;
+		return m_delta_v;
+	}
+
 };
 
 

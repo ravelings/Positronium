@@ -13,11 +13,15 @@ namespace constants
 	// Electrodynamics
 	constexpr double perm{ 1.257e-6 };
 	constexpr double coulombs{ 8.988e9 };
+	constexpr double light{ 2.998e8 };
 
 	// Quantum
 	constexpr double e{ 1.602e-19 };
 	constexpr double e_restmass{ 9.109e-31 };
 	constexpr double e_radius{ 2.818e-15 };
+
+	constexpr double fine_struct{ 7.297e-3 };
+	constexpr double bohr_rad{ 5.292e-11 };
 
 	// Simulation Constraints
 	constexpr double threshold{ constants::e_radius * 2 }; // minimum distance before collision occurs
